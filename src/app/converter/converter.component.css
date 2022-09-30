@@ -1,0 +1,40 @@
+.converter {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  width: 50%;
+  margin: auto;
+  background-color: rgba(114, 159, 159, 0.7);
+  border-radius: 15px;
+}
+
+.div-icon {
+  background: url(../icon/reshot-icon-arrows-in-opposite-directions-XG68R79YHF-ede38.svg) no-repeat;
+  width: 20px;
+  height: 20px;
+  margin: 15px auto;
+}
+
+input{
+  height: 30px;
+  border: none;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  text-align: center;
+}
+
+select{
+  height: 100%;
+  border: none;
+  background-color: rgb(229, 249, 249);
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+input,select:focus {
+  outline: none;
+}
+
+input,select:hover{
+  cursor: pointer;
+}

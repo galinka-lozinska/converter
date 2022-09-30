@@ -1,0 +1,10 @@
+ul {
+  list-style-type:none;
+  color: #fff;
+}
+
+.header {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 30px;
+  padding-top: .5em;
+}
