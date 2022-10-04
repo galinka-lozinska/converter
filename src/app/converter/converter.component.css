@@ -9,7 +9,7 @@
 }
 
 .div-icon {
-  background: url(../icon/reshot-icon-arrows-in-opposite-directions-XG68R79YHF-ede38.svg) no-repeat;
+  background: url(../../assets/icon/icons8-google-recaptcha.svg) no-repeat;
   width: 20px;
   height: 20px;
   margin: 15px auto;
@@ -21,6 +21,12 @@ input{
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   text-align: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 select{

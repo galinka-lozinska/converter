@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { CurrencyService } from './currency.service';
+import { Component, OnInit, Pipe } from '@angular/core';
+import { CurrencyService } from './service/currency.service';
 
-interface Currency{
+export interface Currency{
   ccy:string,
   sale:number
 }
@@ -13,7 +13,6 @@ interface Currency{
 })
 export class AppComponent implements OnInit{
   listOfCurrencies:Array<Currency> = [];
-  response:any;
 
   constructor(private http: HttpClient, private curService: CurrencyService) {
 
@@ -21,7 +20,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(){
     this.curService.fetchDataCurrency()
-    .subscribe((res) => {
+    .subscribe((res:Array<Currency>) => {
       this.listOfCurrencies = res.map((el) => {
         return {
           ccy: el.ccy,

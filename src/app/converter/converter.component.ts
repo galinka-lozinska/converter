@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyService } from '../currency.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Currency } from '../app.component';
+import { CurrencyService } from '../service/currency.service';
 
 @Component({
   selector: 'app-converter',
@@ -8,8 +10,7 @@ import { CurrencyService } from '../currency.service';
 })
 export class ConverterComponent implements OnInit{
 
-  inputFirst:number;
-  inputSecond:number;
+  convertForm:FormGroup;
   currUSD:number;
   currEUR:number;
 
@@ -18,39 +19,52 @@ export class ConverterComponent implements OnInit{
 
   ngOnInit(){
     this.curService.fetchDataCurrency()
-    .subscribe((res) => {
-      const usd = res.find(e => e.ccy === 'USD');
-      const eur = res.find(e => e.ccy === 'EUR');
+    .subscribe((res:Array<Currency>) => {
+      const usd = res.find((e:Currency) => e.ccy === 'USD');
+      const eur = res.find((e:Currency) => e.ccy === 'EUR');
       this.currEUR = Number(eur.sale);
       this.currUSD = Number(usd.sale);
     });
-  }
 
-  getConverterForFirstInput(currentCurrency:string, convertCurrency:string, amount:string) {
-    this.inputSecond = this.converter(currentCurrency, convertCurrency, amount);
-  }
+    this.convertForm = new FormGroup({
+      inputFirst: new FormControl('',[Validators.required,
+        Validators.pattern(/^[0-9]\d*$/)]),
+      inputSecond: new FormControl('',[Validators.required,
+        Validators.pattern(/^[0-9]\d*$/)]),
+      firstSelect: new FormControl('1'),
+      secondSelect: new FormControl('1')
+    });
 
-  getConverterForSecondInput(currentCurrency:string, convertCurrency:string, amount:string) {
-    this.inputFirst = this.converter(currentCurrency, convertCurrency, amount);
-  }
-
-  private converter(currentCurrency:string, convertCurrency:string, amount:string):number {
-    if(!isNaN(Number(amount))) {
-      if(isNaN(Number(currentCurrency))) {
-        if(currentCurrency === convertCurrency) {
-          return Number(amount);
-        } else {
-          return isNaN(Number(convertCurrency))
-            ? Number(amount)
-            : +(Number(convertCurrency) * Number(amount)).toFixed(2);
-        }
-      } else {
-        return isNaN(Number(convertCurrency))
-          ? +(Number(amount) / Number(currentCurrency)).toFixed(2)
-          : +(Number(amount) / Number(currentCurrency) * Number(convertCurrency)).toFixed(2);
+    this.convertForm.get('inputFirst').valueChanges.subscribe((value) => {
+      if (this.convertForm.get('inputFirst').valid) {
+        this.convertForm.patchValue({
+          inputSecond: this.converter(value, this.convertForm.get('firstSelect').value, this.convertForm.get('secondSelect').value),
+        },{emitEvent: false});
       }
-    }
+    });
 
-    return 0;
+    this.convertForm.get('inputSecond').valueChanges.subscribe((value) => {
+      if (this.convertForm.get('inputSecond').valid) {
+        this.convertForm.patchValue({
+          inputFirst: this.converter(value, this.convertForm.get('secondSelect').value, this.convertForm.get('firstSelect').value),
+        },{emitEvent: false});
+      }
+    });
+
+    this.convertForm.get('firstSelect').valueChanges.subscribe((value) => {
+      this.convertForm.patchValue({
+        inputSecond: this.converter(this.convertForm.get('inputFirst').value, value, this.convertForm.get('secondSelect').value),
+      },{emitEvent: false});
+    });
+
+    this.convertForm.get('secondSelect').valueChanges.subscribe((value) => {
+      this.convertForm.patchValue({
+        inputFirst: this.converter(this.convertForm.get('inputSecond').value, value, this.convertForm.get('firstSelect').value),
+      },{emitEvent: false});
+    });
+  }
+
+  private converter(value:number, currentCurrency:number, convertCurrency:number):number {
+    return +((value / currentCurrency) * convertCurrency).toFixed(2) || null;
   }
 }

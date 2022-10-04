@@ -1,20 +1,20 @@
-<div class="converter">
+<div class="converter" [formGroup]="convertForm">
   <h4>Converter</h4>
   <div class="item-input">
-    <input type="text" #inpFirst value="{{inputFirst || ''}}" (keyup)="getConverterForFirstInput(selFirst.value,selSecond.value, inpFirst.value)">
-    <select #selFirst (change)="getConverterForFirstInput(selFirst.value,selSecond.value, inpFirst.value)">
-      <option value="UAH" selected>UAH</option>
-      <option [value]="currUSD">USD</option>
-      <option [value]="currEUR">EUR</option>
+    <input type="number" formControlName="inputFirst">
+    <select formControlName="firstSelect">
+      <option value="1">UAH</option>
+      <option [ngValue]="currUSD">USD</option>
+      <option [ngValue]="currEUR">EUR</option>
     </select>
   </div>
   <div class="div-icon">
   </div>
   <div class="item-input">
-    <input type="text" #inpSecond value="{{inputSecond || ''}}" (keyup)="getConverterForSecondInput(selSecond.value, selFirst.value, inpSecond.value)">
-    <select #selSecond (change)="getConverterForSecondInput(selSecond.value, selFirst.value, inpSecond.value)">
-      <option value="UAH">UAH</option>
-      <option [value]="currUSD" selected>USD</option>
+    <input type="number" formControlName="inputSecond">
+    <select formControlName="secondSelect">
+      <option value="1">UAH</option>
+      <option [value]="currUSD">USD</option>
       <option [value]="currEUR">EUR</option>
     </select>
   </div>
