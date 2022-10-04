@@ -1,4 +1,9 @@
 <div class="container">
-  <app-header [listDate]="listOfCurrencies"></app-header>
-  <app-converter></app-converter>
+  <div *ngIf="errorMessage; else convertCurrency" class="error_message">
+    <p>The server is not available!!!</p>
+  </div>
+  <ng-template #convertCurrency>
+    <app-header [listDate]="listOfCurrencies"></app-header>
+    <app-converter [listDate]="listOfCurrencies"></app-converter>
+  </ng-template>
 </div>

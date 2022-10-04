@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Currency } from '../app.component';
-import { CurrencyService } from '../service/currency.service';
 
 @Component({
   selector: 'app-converter',
@@ -10,61 +8,36 @@ import { CurrencyService } from '../service/currency.service';
 })
 export class ConverterComponent implements OnInit{
 
-  convertForm:FormGroup;
-  currUSD:number;
-  currEUR:number;
+  @Input() listDate = [];
 
-  constructor(private curService: CurrencyService) {
+  convertForm:FormGroup;
+
+  constructor() {
   }
 
   ngOnInit(){
-    this.curService.fetchDataCurrency()
-    .subscribe((res:Array<Currency>) => {
-      const usd = res.find((e:Currency) => e.ccy === 'USD');
-      const eur = res.find((e:Currency) => e.ccy === 'EUR');
-      this.currEUR = Number(eur.sale);
-      this.currUSD = Number(usd.sale);
-    });
-
     this.convertForm = new FormGroup({
       inputFirst: new FormControl('',[Validators.required,
-        Validators.pattern(/^[0-9]\d*$/)]),
+        Validators.pattern(/^[0-9]\d*(\.\d+)?$/)]),
       inputSecond: new FormControl('',[Validators.required,
-        Validators.pattern(/^[0-9]\d*$/)]),
+        Validators.pattern(/^[0-9]\d*(\.\d+)?$/)]),
       firstSelect: new FormControl('1'),
       secondSelect: new FormControl('1')
     });
 
-    this.convertForm.get('inputFirst').valueChanges.subscribe((value) => {
-      if (this.convertForm.get('inputFirst').valid) {
-        this.convertForm.patchValue({
-          inputSecond: this.converter(value, this.convertForm.get('firstSelect').value, this.convertForm.get('secondSelect').value),
-        },{emitEvent: false});
-      }
-    });
-
-    this.convertForm.get('inputSecond').valueChanges.subscribe((value) => {
-      if (this.convertForm.get('inputSecond').valid) {
-        this.convertForm.patchValue({
-          inputFirst: this.converter(value, this.convertForm.get('secondSelect').value, this.convertForm.get('firstSelect').value),
-        },{emitEvent: false});
-      }
-    });
-
-    this.convertForm.get('firstSelect').valueChanges.subscribe((value) => {
-      this.convertForm.patchValue({
-        inputSecond: this.converter(this.convertForm.get('inputFirst').value, value, this.convertForm.get('secondSelect').value),
-      },{emitEvent: false});
-    });
-
-    this.convertForm.get('secondSelect').valueChanges.subscribe((value) => {
-      this.convertForm.patchValue({
-        inputFirst: this.converter(this.convertForm.get('inputSecond').value, value, this.convertForm.get('firstSelect').value),
-      },{emitEvent: false});
-    });
+    this.convertForm.valueChanges.subscribe(()=>this.onChange);
   }
 
-  private converter(value:number, currentCurrency:number, convertCurrency:number):number {
+  onChange(value:number, nameElement:string, changeElement:string, firstSelect:string, secondSelect:string) {
+    this.convertForm.patchValue({
+      [changeElement] : this.convertForm.get(nameElement).valid
+        ? this.converter(value, this.convertForm.get(firstSelect).value, this.convertForm.get(secondSelect).value)
+         : null,},{emitEvent:false});
+  }
+
+  converter(value:number, currentCurrency:number, convertCurrency:number):number {
+    console.log(+((value / currentCurrency) * convertCurrency).toFixed(2) || null);
+    
     return +((value / currentCurrency) * convertCurrency).toFixed(2) || null;
   }
 }

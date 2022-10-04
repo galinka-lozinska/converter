@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, Pipe } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CurrencyService } from './service/currency.service';
 
 export interface Currency{
@@ -12,7 +12,14 @@ export interface Currency{
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  listOfCurrencies:Array<Currency> = [];
+  listOfCurrencies:Array<Currency> = [
+    {
+      ccy: "UAH",
+      sale: 1,
+    }
+  ];
+
+  errorMessage:boolean = false;
 
   constructor(private http: HttpClient, private curService: CurrencyService) {
 
@@ -20,15 +27,17 @@ export class AppComponent implements OnInit{
 
   ngOnInit(){
     this.curService.fetchDataCurrency()
-    .subscribe((res:Array<Currency>) => {
-      this.listOfCurrencies = res.map((el) => {
-        return {
-          ccy: el.ccy,
-          sale: Number(el.sale)
+    .subscribe(date => {
+      for(let el in date) {
+        if (date[el].ccy !== "BTC") {
+          this.listOfCurrencies.push({
+            ccy: date[el].ccy,
+            sale: +Number(date[el].sale).toFixed(2),
+          });
         }
-      });
+      }
+    },() => {
+      this.errorMessage = true;;
     });
   }
-
-  
 }

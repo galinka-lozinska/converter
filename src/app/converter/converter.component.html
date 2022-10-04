@@ -1,21 +1,21 @@
 <div class="converter" [formGroup]="convertForm">
   <h4>Converter</h4>
   <div class="item-input">
-    <input type="number" formControlName="inputFirst">
-    <select formControlName="firstSelect">
-      <option value="1">UAH</option>
-      <option [ngValue]="currUSD">USD</option>
-      <option [ngValue]="currEUR">EUR</option>
+    <input type="number" #inputF formControlName="inputFirst" (keyup)="onChange(+inputF.value,'inputFirst', 'inputSecond','firstSelect', 'secondSelect')">
+    <select formControlName="firstSelect" (change)="onChange(+inputF.value,'inputFirst', 'inputSecond','firstSelect', 'secondSelect')">
+      <ng-container *ngFor="let item of listDate">
+        <option [value]="item.sale">{{item.ccy}}</option>
+      </ng-container>
     </select>
   </div>
   <div class="div-icon">
   </div>
   <div class="item-input">
-    <input type="number" formControlName="inputSecond">
-    <select formControlName="secondSelect">
-      <option value="1">UAH</option>
-      <option [value]="currUSD">USD</option>
-      <option [value]="currEUR">EUR</option>
+    <input type="number" #inputSec formControlName="inputSecond" (keyup)="onChange(+inputSec.value,'inputSecond', 'inputFirst','secondSelect', 'firstSelect')">
+    <select formControlName="secondSelect" (change)="onChange(+inputSec.value,'inputSecond', 'inputFirst','secondSelect', 'firstSelect')">
+      <ng-container *ngFor="let item of listDate">
+        <option [value]="item.sale">{{item.ccy}}</option>
+      </ng-container>
     </select>
   </div>
 </div>

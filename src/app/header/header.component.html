@@ -1,7 +1,9 @@
 <div class="header">
   <ul>
     <li *ngFor="let item of listDate">
-      {{item.ccy}} - {{item.sale}}
+      <ng-container *ngIf="item.ccy !== 'UAH'">
+        {{item.ccy}} - {{item.sale}}
+      </ng-container>
     </li>
   </ul>
 </div>
